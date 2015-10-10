@@ -2,11 +2,11 @@
  * 本文件提供实现Decaf编译器所需要的BYACC脚本。
  * 在第一阶段中你需要补充完整这个文件中的语法规则。
  * 请参考"YACC--Yet Another Compiler Compiler"中关于如何编写BYACC脚本的说明。
- * 
+ *
  * Keltin Leung
  * DCST, Tsinghua University
  */
- 
+
 %{
 package decaf.frontend;
 
@@ -24,24 +24,26 @@ import java.util.*;
 %Jnodebug
 %Jnoconstruct
 
-%token VOID   BOOL  INT   STRING  CLASS 
-%token NULL   EXTENDS     THIS     WHILE   FOR   
+%token VOID   BOOL  INT   STRING  CLASS
+%token NULL   EXTENDS     THIS     WHILE   FOR
 %token IF     ELSE        RETURN   BREAK   NEW
 %token PRINT  READ_INTEGER         READ_LINE
 %token LITERAL
 %token IDENTIFIER	  AND    OR    STATIC  INSTANCEOF
 %token LESS_EQUAL   GREATER_EQUAL  EQUAL   NOT_EQUAL
+%token INC DEC
 %token '+'  '-'  '*'  '/'  '%'  '='  '>'  '<'  '.'
 %token ','  ';'  '!'  '('  ')'  '['  ']'  '{'  '}'
 
 %left OR
-%left AND 
+%left AND
 %nonassoc EQUAL NOT_EQUAL
 %nonassoc LESS_EQUAL GREATER_EQUAL '<' '>'
 %left  '+' '-'
-%left  '*' '/' '%'  
-%nonassoc UMINUS '!' 
-%nonassoc '[' '.' 
+%left  '*' '/' '%'
+%nonassoc UMINUS '!'
+%left INC DEC
+%nonassoc '[' '.'
 %nonassoc ')' EMPTY
 %nonassoc ELSE
 
@@ -73,7 +75,7 @@ Variable        :	Type IDENTIFIER
 						$$.vdef = new Tree.VarDef($2.ident, $1.type, $2.loc);
 					}
 				;
-				
+
 Type            :	INT
 					{
 						$$.type = new Tree.TypeIdent(Tree.INT, $1.loc);
@@ -130,12 +132,12 @@ FieldList       :	FieldList VariableDef
                 		$$.flist = new ArrayList<Tree>();
                 	}
                 ;
- 
+
 Formals         :	VariableList
                 |	/* empty */
                 	{
                 		$$ = new SemValue();
-                		$$.vlist = new ArrayList<Tree.VarDef>(); 
+                		$$.vlist = new ArrayList<Tree.VarDef>();
                 	}
                 ;
 
@@ -165,7 +167,7 @@ StmtBlock       :	'{' StmtList '}'
 						$$.stmt = new Block($2.slist, $1.loc);
 					}
                 ;
-	
+
 StmtList        :	StmtList Stmt
 					{
 						$$.slist.add($2.stmt);
@@ -181,7 +183,7 @@ Stmt		    :	VariableDef
 					{
 						$$.stmt = $1.vdef;
 					}
-					
+
                 |	SimpleStmt ';'
                 	{
                 		if ($$.stmt == null) {
@@ -216,7 +218,7 @@ Receiver     	:	Expr '.'
                 	{
                 		$$ = new SemValue();
                 	}
-                ; 
+                ;
 
 LValue          :	Receiver IDENTIFIER
 					{
@@ -310,6 +312,22 @@ Expr            :	LValue
                 	{
                 		$$.expr = new Tree.Unary(Tree.NOT, $2.expr, $1.loc);
                 	}
+                | INC Expr
+                  {
+                    $$.expr = new Tree.Unary(Tree.PREINC, $2.expr, $1.loc);
+                  }
+                | Expr INC
+                  {
+                    $$.expr = new Tree.Unary(Tree.POSTINC, $1.expr, $2.loc);
+                  }
+                | DEC Expr
+                  {
+                    $$.expr = new Tree.Unary(Tree.PREDEC, $2.expr, $1.loc);
+                  }
+                | Expr DEC
+                  {
+                    $$.expr = new Tree.Unary(Tree.POSTDEC, $1.expr, $2.loc);
+                  }
                 |	READ_INTEGER '(' ')'
                 	{
                 		$$.expr = new Tree.ReadIntExpr($1.loc);
@@ -337,9 +355,9 @@ Expr            :	LValue
                 |	'(' CLASS IDENTIFIER ')' Expr
                 	{
                 		$$.expr = new Tree.TypeCast($3.ident, $5.expr, $5.loc);
-                	} 
+                	}
                 ;
-	
+
 Constant        :	LITERAL
 					{
 						$$.expr = new Tree.Literal($1.typeTag, $1.literal, $1.loc);
@@ -368,7 +386,7 @@ ExprList        :	ExprList ',' Expr
 						$$.elist.add($1.expr);
                 	}
                 ;
-    
+
 WhileStmt       :	WHILE '(' Expr ')' Stmt
 					{
 						$$.stmt = new Tree.WhileLoop($3.expr, $5.stmt, $1.loc);
@@ -420,7 +438,7 @@ PrintStmt       :	PRINT '(' ExprList ')'
                 ;
 
 %%
-    
+
 	/**
 	 * 打印当前归约所用的语法规则<br>
 	 * 请勿修改。
@@ -437,7 +455,7 @@ PrintStmt       :	PRINT '(' ExprList ')'
 			System.out.println(rule);
 		return false;
     }
-    
+
     public void diagnose() {
 		addReduceListener(this);
 		yyparse();

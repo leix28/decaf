@@ -219,6 +219,12 @@ public class SemValue {
 		case Parser.OR:
 			msg = "operator : ||";
 			break;
+		case Parser.INC:
+			msg = "operator : ++";
+			break;
+		case Parser.DEC:
+			msg = "operator : --";
+			break;
 		default:
 			msg = "operator : " + (char) code;
 			break;
