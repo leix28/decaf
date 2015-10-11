@@ -193,11 +193,16 @@ public abstract class Tree {
      * Type test expressions, of type TypeTest.
      */
     public static final int TYPETEST = TYPECAST + 1;
+    
+    /**
+     * Type count expressions, of type TypeCount. 
+     */
+    public static final int TYPECOUNT = TYPETEST + 1;
 
     /**
      * Indexed array expressions, of type Indexed.
      */
-    public static final int INDEXED = TYPETEST + 1;
+    public static final int INDEXED = TYPECOUNT + 1;
 
     /**
      * Selections, of type Select.
@@ -1164,6 +1169,32 @@ public abstract class Tree {
     }
 
     /**
+     * numinstances expression
+     */
+   public static class TypeCount extends Expr {
+   	
+   	public String className;
+
+   	public TypeCount(String className, Location loc) {
+   		super(TYPECOUNT, loc);
+   		this.className = className;
+    }
+
+   	@Override
+       public void accept(Visitor v) {
+           v.visitTypeCount(this);
+       }
+
+   	@Override
+   	public void printTo(IndentPrintWriter pw) {
+   		pw.println("numinstances");
+   		pw.incIndent();
+   		pw.println(className);
+   		pw.decIndent();
+   	}
+   }
+
+    /**
       * An array selection
       */
     public static class Indexed extends LValue {
@@ -1478,6 +1509,10 @@ public abstract class Tree {
         public void visitTypeTest(TypeTest that) {
             visitTree(that);
         }
+        
+        public void visitTypeCount(TypeCount that) {
+			visitTree(that);
+		}
 
         public void visitIndexed(Indexed that) {
             visitTree(that);

@@ -31,7 +31,7 @@ import java.util.*;
 %token LITERAL
 %token IDENTIFIER	  AND    OR    STATIC  INSTANCEOF
 %token LESS_EQUAL   GREATER_EQUAL  EQUAL   NOT_EQUAL
-%token INC DEC
+%token INC DEC NUMINSTANCES
 %token '+'  '-'  '*'  '/'  '%'  '='  '>'  '<'  '.'
 %token ','  ';'  '!'  '('  ')'  '['  ']'  '{'  '}'
 %token '?'  ':'
@@ -362,6 +362,10 @@ Expr            :	LValue
                 	{
                 		$$.expr = new Tree.TypeCast($3.ident, $5.expr, $5.loc);
                 	}
+                | NUMINSTANCES '(' IDENTIFIER ')'
+                  {
+                    $$.expr = new Tree.TypeCount($3.ident, $1.loc);
+                  }
                 ;
 
 Constant        :	LITERAL
