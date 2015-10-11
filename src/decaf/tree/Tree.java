@@ -128,11 +128,21 @@ public abstract class Tree {
      * Conditional statements, of type If.
      */
     public static final int IF = CONDEXPR + 1;
+    
+    /**
+     * GuardedIf statements, of type GuardedIf.
+     */
+    public static final int GUARDEDIF = IF + 1;    
+
+    /**
+     * Guarded statements, of type GuardedStmt.
+     */
+    public static final int GUARDEDSTMT = GUARDEDIF + 1;    
 
     /**
      * Expression statements, of type Exec.
      */
-    public static final int EXEC = IF + 1;
+    public static final int EXEC = GUARDEDSTMT + 1;
 
     /**
      * Break statements, of type Break.
@@ -615,6 +625,63 @@ public abstract class Tree {
     	}
     }
 
+    /**
+     * An "if E1 : S1 ||| E2 : S2 ||| ... ||| En : Sn fi" block
+     */
+    public static class GuardedIf extends Tree {
+
+    	public List<Tree> guarded;
+
+    	public GuardedIf(List<Tree> guarded, Location loc) {
+    		super(GUARDEDIF, loc);
+    		this.guarded = guarded;
+    	}
+
+    	@Override
+    	public void accept(Visitor v) {
+    		v.visitGuardedIf(this);
+    	}
+
+    	@Override
+    	public void printTo(IndentPrintWriter pw) {
+    		pw.println("guardedif");
+    		pw.incIndent();
+    		for (Tree tree : guarded) {
+    			tree.printTo(pw);
+    		}
+    		pw.decIndent();
+    	}
+    }
+
+    /**
+     * An "E1 : S1" block
+     */
+    public static class GuardedStmt extends Tree {
+
+    	public Expr cond;
+    	public Tree stmt;
+
+    	public GuardedStmt(Expr cond, Tree stmt, Location loc) {
+    		super(GUARDEDSTMT, loc);
+    		this.cond = cond;
+    		this.stmt = stmt;
+    	}
+
+    	@Override
+    	public void accept(Visitor v) {
+    		v.visitGuardedStmt(this);
+    	}
+
+    	@Override
+    	public void printTo(IndentPrintWriter pw) {
+    		pw.println("guardedstmt");
+    		pw.incIndent();
+    		cond.printTo(pw);
+    		stmt.printTo(pw);
+    		pw.decIndent();
+    	}
+    }
+    
     /**
       * an expression statement
       * @param expr expression structure
@@ -1436,6 +1503,14 @@ public abstract class Tree {
 
         public void visitIf(If that) {
             visitTree(that);
+        }
+        
+        public void visitGuardedIf(GuardedIf that) {
+        	visitTree(that);
+        }
+        
+        public void visitGuardedStmt(GuardedStmt that) {
+        	visitTree(that);
         }
 
         public void visitExec(Exec that) {

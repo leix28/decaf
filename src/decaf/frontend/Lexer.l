@@ -64,6 +64,7 @@ WHITESPACE			= ([ \t]+)
 "while"				{ return keyword(Parser.WHILE);			}
 "for"				{ return keyword(Parser.FOR);			}
 "if"				{ return keyword(Parser.IF);			}
+"fi"        { return keyword(Parser.FI);      }
 "else"				{ return keyword(Parser.ELSE);			}
 "return"			{ return keyword(Parser.RETURN);		}
 "break"				{ return keyword(Parser.BREAK);			}
@@ -75,6 +76,7 @@ WHITESPACE			= ([ \t]+)
 "numinstances"  { return keyword(Parser.NUMINSTANCES); }
 
 	// 识别操作符的规则
+"|||"       { return operator(Parser.GUARDED_OR); }
 "<="				{ return operator(Parser.LESS_EQUAL);	}
 ">="				{ return operator(Parser.GREATER_EQUAL);}
 "=="				{ return operator(Parser.EQUAL);		}

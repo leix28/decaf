@@ -143,6 +143,9 @@ public class SemValue {
 		case Parser.IF:
 			msg = "keyword  : if";
 			break;
+		case Parser.FI:
+			msg = "keyword  : fi";
+			break;
 		case Parser.INT:
 			msg = "keyword  : int";
 			break;
@@ -201,6 +204,9 @@ public class SemValue {
 			break;
 
 		// 操作符
+		case Parser.GUARDED_OR:
+			msg = "operator : |||";
+			break;
 		case Parser.AND:
 			msg = "operator : &&";
 			break;

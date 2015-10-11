@@ -32,6 +32,7 @@ import java.util.*;
 %token IDENTIFIER	  AND    OR    STATIC  INSTANCEOF
 %token LESS_EQUAL   GREATER_EQUAL  EQUAL   NOT_EQUAL
 %token INC DEC NUMINSTANCES
+%token FI GUARDED_OR
 %token '+'  '-'  '*'  '/'  '%'  '='  '>'  '<'  '.'
 %token ','  ';'  '!'  '('  ')'  '['  ']'  '{'  '}'
 %token '?'  ':'
@@ -48,6 +49,7 @@ import java.util.*;
 %nonassoc '[' '.'
 %nonassoc ')' EMPTY
 %nonassoc ELSE
+%left GUARDED_OR
 
 %start Program
 
@@ -193,6 +195,7 @@ Stmt		    :	VariableDef
                 		}
                 	}
                 |	IfStmt
+                | GuardedIfStmt
                 |	WhileStmt
                 |	ForStmt
                 |	ReturnStmt ';'
@@ -200,6 +203,27 @@ Stmt		    :	VariableDef
                 |	BreakStmt ';'
                 |	StmtBlock
                 ;
+
+GuardedIfStmt   : IF GuardedStmts FI
+                  {
+                    $$.stmt = new Tree.GuardedIf($2.slist, $1.loc);
+                  }
+
+GuardedStmts    : GuardedStmts GUARDED_OR GuardedStmt
+                  {
+                    $1.slist.add($3.stmt);
+                  }
+                | GuardedStmt
+                  {
+                    $$ = new SemValue();
+                    $$.slist = new ArrayList<Tree>();
+                    $$.slist.add($1.stmt);
+                  }
+
+GuardedStmt     : Expr ':' Stmt
+                  {
+                    $$.stmt = new Tree.GuardedStmt($1.expr, $3.stmt, $2.loc);
+                  }
 
 SimpleStmt      :	LValue '=' Expr
 					{
