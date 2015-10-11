@@ -36,7 +36,7 @@ import java.util.*;
 %token ','  ';'  '!'  '('  ')'  '['  ']'  '{'  '}'
 %token '?'  ':'
 
-%left '?' ':'
+%right '?' ':'
 %left OR
 %left AND
 %nonassoc EQUAL NOT_EQUAL
