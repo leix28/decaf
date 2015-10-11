@@ -135,9 +135,14 @@ public abstract class Tree {
     public static final int GUARDEDIF = IF + 1;    
 
     /**
+     * GuardedIf statements, of type GuardedIf.
+     */
+    public static final int GUARDEDDO = GUARDEDIF + 1;    
+
+    /**
      * Guarded statements, of type GuardedStmt.
      */
-    public static final int GUARDEDSTMT = GUARDEDIF + 1;    
+    public static final int GUARDEDSTMT = GUARDEDDO + 1;    
 
     /**
      * Expression statements, of type Exec.
@@ -653,6 +658,34 @@ public abstract class Tree {
     	}
     }
 
+    /**
+     * An "do E1 : S1 ||| E2 : S2 ||| ... ||| En : Sn od" block
+     */
+    public static class GuardedDo extends Tree {
+
+    	public List<Tree> guarded;
+
+    	public GuardedDo(List<Tree> guarded, Location loc) {
+    		super(GUARDEDDO, loc);
+    		this.guarded = guarded;
+    	}
+
+    	@Override
+    	public void accept(Visitor v) {
+    		v.visitGuardedDo(this);
+    	}
+
+    	@Override
+    	public void printTo(IndentPrintWriter pw) {
+    		pw.println("guardeddo");
+    		pw.incIndent();
+    		for (Tree tree : guarded) {
+    			tree.printTo(pw);
+    		}
+    		pw.decIndent();
+    	}
+    }
+    
     /**
      * An "E1 : S1" block
      */
@@ -1509,6 +1542,10 @@ public abstract class Tree {
         	visitTree(that);
         }
         
+        public void visitGuardedDo(GuardedDo that) {
+        	visitTree(that);
+        }
+                
         public void visitGuardedStmt(GuardedStmt that) {
         	visitTree(that);
         }

@@ -146,6 +146,12 @@ public class SemValue {
 		case Parser.FI:
 			msg = "keyword  : fi";
 			break;
+		case Parser.DO:
+			msg = "keyword  : do";
+			break;
+		case Parser.OD:
+			msg = "keyword  : od";
+			break;
 		case Parser.INT:
 			msg = "keyword  : int";
 			break;

@@ -32,7 +32,7 @@ import java.util.*;
 %token IDENTIFIER	  AND    OR    STATIC  INSTANCEOF
 %token LESS_EQUAL   GREATER_EQUAL  EQUAL   NOT_EQUAL
 %token INC DEC NUMINSTANCES
-%token FI GUARDED_OR
+%token FI GUARDED_OR DO OD
 %token '+'  '-'  '*'  '/'  '%'  '='  '>'  '<'  '.'
 %token ','  ';'  '!'  '('  ')'  '['  ']'  '{'  '}'
 %token '?'  ':'
@@ -196,6 +196,7 @@ Stmt		    :	VariableDef
                 	}
                 |	IfStmt
                 | GuardedIfStmt
+                | GuardedDoStmt
                 |	WhileStmt
                 |	ForStmt
                 |	ReturnStmt ';'
@@ -203,6 +204,11 @@ Stmt		    :	VariableDef
                 |	BreakStmt ';'
                 |	StmtBlock
                 ;
+
+GuardedDoStmt   : DO GuardedStmts OD
+                  {
+                    $$.stmt = new Tree.GuardedDo($2.slist, $1.loc);
+                  }
 
 GuardedIfStmt   : IF GuardedStmts FI
                   {
