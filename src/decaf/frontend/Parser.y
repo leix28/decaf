@@ -34,7 +34,9 @@ import java.util.*;
 %token INC DEC
 %token '+'  '-'  '*'  '/'  '%'  '='  '>'  '<'  '.'
 %token ','  ';'  '!'  '('  ')'  '['  ']'  '{'  '}'
+%token '?'  ':'
 
+%left '?' ':'
 %left OR
 %left AND
 %nonassoc EQUAL NOT_EQUAL
@@ -42,7 +44,7 @@ import java.util.*;
 %left  '+' '-'
 %left  '*' '/' '%'
 %nonassoc UMINUS '!'
-%left INC DEC
+%nonassoc INC DEC
 %nonassoc '[' '.'
 %nonassoc ')' EMPTY
 %nonassoc ELSE
@@ -327,6 +329,10 @@ Expr            :	LValue
                 | Expr DEC
                   {
                     $$.expr = new Tree.Unary(Tree.POSTDEC, $1.expr, $2.loc);
+                  }
+                | Expr '?' Expr ':' Expr
+                  {
+                    $$.expr = new Tree.Ternary(Tree.COND, $1.expr, $3.expr, $5.expr, $2.loc);
                   }
                 |	READ_INTEGER '(' ')'
                 	{

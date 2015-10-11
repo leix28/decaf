@@ -283,8 +283,9 @@ public abstract class Tree {
     public static final int MUL = MINUS + 1;
     public static final int DIV = MUL + 1;
     public static final int MOD = DIV + 1;
+    public static final int COND = MOD + 1;
 
-    public static final int NULL = MOD + 1;
+    public static final int NULL = COND + 1;
     public static final int CALLEXPR = NULL + 1;
     public static final int THISEXPR = CALLEXPR + 1;
     public static final int READINTEXPR = THISEXPR + 1;
@@ -973,7 +974,46 @@ public abstract class Tree {
     		}
     	}
     }
+    
+    /**
+     * A ternary operation
+     */
 
+    public static class Ternary extends Expr {
+
+    	public Expr expr1, expr2, expr3;
+
+        public Ternary(int kind, Expr expr1, Expr expr2, Expr expr3, Location loc) {
+            super(kind, loc);
+    		this.expr1 = expr1;
+    		this.expr2 = expr2;
+    		this.expr3 = expr3;
+        }
+
+    	private void ternaryOperatorToString(IndentPrintWriter pw, String op) {
+    		pw.println(op);
+    		pw.incIndent();
+    		expr1.printTo(pw);
+    		expr2.printTo(pw);
+    		expr3.printTo(pw);
+    		pw.decIndent();
+    	}
+
+    	@Override
+        public void accept(Visitor v) {
+            v.visitTernary(this);
+        }
+
+    	@Override
+    	public void printTo(IndentPrintWriter pw) {
+    		switch (tag) {
+    		case COND:
+    			ternaryOperatorToString(pw, "cond");
+    			break;
+			}
+    	}
+    }
+    
     public static class CallExpr extends Expr {
 
     	public Expr receiver;
@@ -1403,6 +1443,10 @@ public abstract class Tree {
             visitTree(that);
         }
 
+        public void visitTernary(Ternary that) {
+			visitTree(that);
+		}
+        
         public void visitCallExpr(CallExpr that) {
             visitTree(that);
         }
