@@ -64,9 +64,9 @@ WHITESPACE			= ([ \t]+)
 "while"				{ return keyword(Parser.WHILE);			}
 "for"				{ return keyword(Parser.FOR);			}
 "if"				{ return keyword(Parser.IF);			}
-"fi"        { return keyword(Parser.FI);      }
+"fi"        		{ return keyword(Parser.FI);      		}
 "do"				{ return keyword(Parser.DO);			}
-"od"        { return keyword(Parser.OD);      }
+"od"       		 	{ return keyword(Parser.OD);    		}
 "else"				{ return keyword(Parser.ELSE);			}
 "return"			{ return keyword(Parser.RETURN);		}
 "break"				{ return keyword(Parser.BREAK);			}
@@ -75,18 +75,18 @@ WHITESPACE			= ([ \t]+)
 "ReadLine"			{ return keyword(Parser.READ_LINE);		}
 "static"			{ return keyword(Parser.STATIC);		}
 "instanceof"		{ return keyword(Parser.INSTANCEOF);	}
-"numinstances"  { return keyword(Parser.NUMINSTANCES); }
+"numinstances"  	{ return keyword(Parser.NUMINSTANCES);  }
 
 	// 识别操作符的规则
-"|||"       { return operator(Parser.GUARDED_OR); }
+"|||"       		{ return operator(Parser.GUARDED_OR);   }
 "<="				{ return operator(Parser.LESS_EQUAL);	}
 ">="				{ return operator(Parser.GREATER_EQUAL);}
 "=="				{ return operator(Parser.EQUAL);		}
 "!="				{ return operator(Parser.NOT_EQUAL);	}
 "&&"				{ return operator(Parser.AND);			}
 "||"				{ return operator(Parser.OR);			}
-"++"        { return operator(Parser.INC);   }
-"--"        { return operator(Parser.DEC);   }
+"++"        		{ return operator(Parser.INC);          }
+"--"        		{ return operator(Parser.DEC);          }
 {SIMPLE_OPERATOR}	{ return operator((int)yycharat(0));	}
 
 	// 识别常数的规则
