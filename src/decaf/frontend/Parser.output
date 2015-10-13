@@ -91,10 +91,10 @@
   67       | '(' Expr ')'
   68       | '-' Expr
   69       | '!' Expr
-  70       | INC Expr
-  71       | Expr INC
-  72       | DEC Expr
-  73       | Expr DEC
+  70       | INC IDENTIFIER
+  71       | LValue INC
+  72       | DEC IDENTIFIER
+  73       | LValue DEC
   74       | Expr '?' Expr ':' Expr
   75       | READ_INTEGER '(' ')'
   76       | READ_LINE '(' ')'
@@ -695,55 +695,17 @@ state 58
 
 
 state 59
-	Expr : INC . Expr  (70)
-	Receiver : .  (47)
+	Expr : INC . IDENTIFIER  (70)
 
-	NULL  shift 46
-	THIS  shift 47
-	NEW  shift 53
-	READ_INTEGER  shift 55
-	READ_LINE  shift 56
-	LITERAL  shift 57
-	INSTANCEOF  shift 58
-	INC  shift 59
-	DEC  shift 60
-	NUMINSTANCES  shift 61
-	'-'  shift 63
-	'!'  shift 64
-	'('  shift 65
-	IDENTIFIER  reduce 47
-
-	Expr  goto 99
-	LValue  goto 90
-	Call  goto 91
-	Receiver  goto 82
-	Constant  goto 83
+	IDENTIFIER  shift 99
+	.  error
 
 
 state 60
-	Expr : DEC . Expr  (72)
-	Receiver : .  (47)
+	Expr : DEC . IDENTIFIER  (72)
 
-	NULL  shift 46
-	THIS  shift 47
-	NEW  shift 53
-	READ_INTEGER  shift 55
-	READ_LINE  shift 56
-	LITERAL  shift 57
-	INSTANCEOF  shift 58
-	INC  shift 59
-	DEC  shift 60
-	NUMINSTANCES  shift 61
-	'-'  shift 63
-	'!'  shift 64
-	'('  shift 65
-	IDENTIFIER  reduce 47
-
-	Expr  goto 100
-	LValue  goto 90
-	Call  goto 91
-	Receiver  goto 82
-	Constant  goto 83
+	IDENTIFIER  shift 100
+	.  error
 
 
 state 61
@@ -959,8 +921,6 @@ state 79
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
 	AND  shift 111
@@ -969,25 +929,27 @@ state 79
 	GREATER_EQUAL  shift 114
 	EQUAL  shift 115
 	NOT_EQUAL  shift 116
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'>'  shift 124
-	'<'  shift 125
-	'.'  shift 126
-	'['  shift 127
-	'?'  shift 128
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'>'  shift 122
+	'<'  shift 123
+	'.'  shift 124
+	'['  shift 125
+	'?'  shift 126
 	.  error
 
 
 state 80
 	SimpleStmt : LValue . '=' Expr  (43)
 	Expr : LValue .  (51)
+	Expr : LValue . INC  (71)
+	Expr : LValue . DEC  (73)
 
+	INC  shift 127
+	DEC  shift 128
 	'='  shift 129
 	AND  reduce 51
 	OR  reduce 51
@@ -995,8 +957,6 @@ state 80
 	GREATER_EQUAL  reduce 51
 	EQUAL  reduce 51
 	NOT_EQUAL  reduce 51
-	INC  reduce 51
-	DEC  reduce 51
 	'+'  reduce 51
 	'-'  reduce 51
 	'*'  reduce 51
@@ -1019,8 +979,6 @@ state 81
 	GREATER_EQUAL  reduce 52
 	EQUAL  reduce 52
 	NOT_EQUAL  reduce 52
-	INC  reduce 52
-	DEC  reduce 52
 	'+'  reduce 52
 	'-'  reduce 52
 	'*'  reduce 52
@@ -1165,8 +1123,6 @@ state 89
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
 	AND  shift 111
@@ -1175,26 +1131,48 @@ state 89
 	GREATER_EQUAL  shift 114
 	EQUAL  shift 115
 	NOT_EQUAL  shift 116
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'>'  shift 124
-	'<'  shift 125
-	'.'  shift 126
-	'['  shift 127
-	'?'  shift 128
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'>'  shift 122
+	'<'  shift 123
+	'.'  shift 124
+	'['  shift 125
+	'?'  shift 126
 	':'  shift 136
 	.  error
 
 
 state 90
 	Expr : LValue .  (51)
+	Expr : LValue . INC  (71)
+	Expr : LValue . DEC  (73)
 
-	.  reduce 51
+	INC  shift 127
+	DEC  shift 128
+	AND  reduce 51
+	OR  reduce 51
+	LESS_EQUAL  reduce 51
+	GREATER_EQUAL  reduce 51
+	EQUAL  reduce 51
+	NOT_EQUAL  reduce 51
+	'+'  reduce 51
+	'-'  reduce 51
+	'*'  reduce 51
+	'/'  reduce 51
+	'%'  reduce 51
+	'>'  reduce 51
+	'<'  reduce 51
+	'.'  reduce 51
+	','  reduce 51
+	';'  reduce 51
+	')'  reduce 51
+	'['  reduce 51
+	']'  reduce 51
+	'?'  reduce 51
+	':'  reduce 51
 
 
 state 91
@@ -1219,8 +1197,6 @@ state 92
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 	ReturnStmt : RETURN Expr .  (95)
 
@@ -1230,18 +1206,16 @@ state 92
 	GREATER_EQUAL  shift 114
 	EQUAL  shift 115
 	NOT_EQUAL  shift 116
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'>'  shift 124
-	'<'  shift 125
-	'.'  shift 126
-	'['  shift 127
-	'?'  shift 128
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'>'  shift 122
+	'<'  shift 123
+	'.'  shift 124
+	'['  shift 125
+	'?'  shift 126
 	';'  reduce 95
 
 
@@ -1328,91 +1302,15 @@ state 98
 
 
 state 99
-	Receiver : Expr . '.'  (46)
-	LValue : Expr . '[' Expr ']'  (49)
-	Expr : Expr . '+' Expr  (54)
-	Expr : Expr . '-' Expr  (55)
-	Expr : Expr . '*' Expr  (56)
-	Expr : Expr . '/' Expr  (57)
-	Expr : Expr . '%' Expr  (58)
-	Expr : Expr . EQUAL Expr  (59)
-	Expr : Expr . NOT_EQUAL Expr  (60)
-	Expr : Expr . '<' Expr  (61)
-	Expr : Expr . '>' Expr  (62)
-	Expr : Expr . LESS_EQUAL Expr  (63)
-	Expr : Expr . GREATER_EQUAL Expr  (64)
-	Expr : Expr . AND Expr  (65)
-	Expr : Expr . OR Expr  (66)
-	Expr : INC Expr .  (70)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
-	Expr : Expr . '?' Expr ':' Expr  (74)
+	Expr : INC IDENTIFIER .  (70)
 
-	'.'  shift 126
-	'['  shift 127
-	AND  reduce 70
-	OR  reduce 70
-	LESS_EQUAL  reduce 70
-	GREATER_EQUAL  reduce 70
-	EQUAL  reduce 70
-	NOT_EQUAL  reduce 70
-	'+'  reduce 70
-	'-'  reduce 70
-	'*'  reduce 70
-	'/'  reduce 70
-	'%'  reduce 70
-	'>'  reduce 70
-	'<'  reduce 70
-	','  reduce 70
-	';'  reduce 70
-	')'  reduce 70
-	']'  reduce 70
-	'?'  reduce 70
-	':'  reduce 70
+	.  reduce 70
 
 
 state 100
-	Receiver : Expr . '.'  (46)
-	LValue : Expr . '[' Expr ']'  (49)
-	Expr : Expr . '+' Expr  (54)
-	Expr : Expr . '-' Expr  (55)
-	Expr : Expr . '*' Expr  (56)
-	Expr : Expr . '/' Expr  (57)
-	Expr : Expr . '%' Expr  (58)
-	Expr : Expr . EQUAL Expr  (59)
-	Expr : Expr . NOT_EQUAL Expr  (60)
-	Expr : Expr . '<' Expr  (61)
-	Expr : Expr . '>' Expr  (62)
-	Expr : Expr . LESS_EQUAL Expr  (63)
-	Expr : Expr . GREATER_EQUAL Expr  (64)
-	Expr : Expr . AND Expr  (65)
-	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : DEC Expr .  (72)
-	Expr : Expr . DEC  (73)
-	Expr : Expr . '?' Expr ':' Expr  (74)
+	Expr : DEC IDENTIFIER .  (72)
 
-	'.'  shift 126
-	'['  shift 127
-	AND  reduce 72
-	OR  reduce 72
-	LESS_EQUAL  reduce 72
-	GREATER_EQUAL  reduce 72
-	EQUAL  reduce 72
-	NOT_EQUAL  reduce 72
-	'+'  reduce 72
-	'-'  reduce 72
-	'*'  reduce 72
-	'/'  reduce 72
-	'%'  reduce 72
-	'>'  reduce 72
-	'<'  reduce 72
-	','  reduce 72
-	';'  reduce 72
-	')'  reduce 72
-	']'  reduce 72
-	'?'  reduce 72
-	':'  reduce 72
+	.  reduce 72
 
 
 state 101
@@ -1448,14 +1346,10 @@ state 103
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
 	Expr : '-' Expr .  (68)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
-	INC  shift 117
-	DEC  shift 118
-	'.'  shift 126
-	'['  shift 127
+	'.'  shift 124
+	'['  shift 125
 	AND  reduce 68
 	OR  reduce 68
 	LESS_EQUAL  reduce 68
@@ -1494,14 +1388,10 @@ state 104
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
 	Expr : '!' Expr .  (69)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
-	INC  shift 117
-	DEC  shift 118
-	'.'  shift 126
-	'['  shift 127
+	'.'  shift 124
+	'['  shift 125
 	AND  reduce 69
 	OR  reduce 69
 	LESS_EQUAL  reduce 69
@@ -1547,8 +1437,6 @@ state 106
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
 	Expr : '(' Expr . ')'  (67)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
 	AND  shift 111
@@ -1557,19 +1445,17 @@ state 106
 	GREATER_EQUAL  shift 114
 	EQUAL  shift 115
 	NOT_EQUAL  shift 116
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'>'  shift 124
-	'<'  shift 125
-	'.'  shift 126
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'>'  shift 122
+	'<'  shift 123
+	'.'  shift 124
 	')'  shift 147
-	'['  shift 127
-	'?'  shift 128
+	'['  shift 125
+	'?'  shift 126
 	.  error
 
 
@@ -1754,18 +1640,6 @@ state 116
 
 
 state 117
-	Expr : Expr INC .  (71)
-
-	.  reduce 71
-
-
-state 118
-	Expr : Expr DEC .  (73)
-
-	.  reduce 73
-
-
-state 119
 	Expr : Expr '+' . Expr  (54)
 	Receiver : .  (47)
 
@@ -1791,7 +1665,7 @@ state 119
 	Constant  goto 83
 
 
-state 120
+state 118
 	Expr : Expr '-' . Expr  (55)
 	Receiver : .  (47)
 
@@ -1817,7 +1691,7 @@ state 120
 	Constant  goto 83
 
 
-state 121
+state 119
 	Expr : Expr '*' . Expr  (56)
 	Receiver : .  (47)
 
@@ -1843,7 +1717,7 @@ state 121
 	Constant  goto 83
 
 
-state 122
+state 120
 	Expr : Expr '/' . Expr  (57)
 	Receiver : .  (47)
 
@@ -1869,7 +1743,7 @@ state 122
 	Constant  goto 83
 
 
-state 123
+state 121
 	Expr : Expr '%' . Expr  (58)
 	Receiver : .  (47)
 
@@ -1895,7 +1769,7 @@ state 123
 	Constant  goto 83
 
 
-state 124
+state 122
 	Expr : Expr '>' . Expr  (62)
 	Receiver : .  (47)
 
@@ -1921,7 +1795,7 @@ state 124
 	Constant  goto 83
 
 
-state 125
+state 123
 	Expr : Expr '<' . Expr  (61)
 	Receiver : .  (47)
 
@@ -1947,13 +1821,13 @@ state 125
 	Constant  goto 83
 
 
-state 126
+state 124
 	Receiver : Expr '.' .  (46)
 
 	.  reduce 46
 
 
-state 127
+state 125
 	LValue : Expr '[' . Expr ']'  (49)
 	Receiver : .  (47)
 
@@ -1979,7 +1853,7 @@ state 127
 	Constant  goto 83
 
 
-state 128
+state 126
 	Expr : Expr '?' . Expr ':' Expr  (74)
 	Receiver : .  (47)
 
@@ -2003,6 +1877,18 @@ state 128
 	Call  goto 91
 	Receiver  goto 82
 	Constant  goto 83
+
+
+state 127
+	Expr : LValue INC .  (71)
+
+	.  reduce 71
+
+
+state 128
+	Expr : LValue DEC .  (73)
+
+	.  reduce 73
 
 
 state 129
@@ -2078,8 +1964,6 @@ state 131
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 	WhileStmt : WHILE '(' Expr . ')' Stmt  (89)
 
@@ -2089,19 +1973,17 @@ state 131
 	GREATER_EQUAL  shift 114
 	EQUAL  shift 115
 	NOT_EQUAL  shift 116
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'>'  shift 124
-	'<'  shift 125
-	'.'  shift 126
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'>'  shift 122
+	'<'  shift 123
+	'.'  shift 124
 	')'  shift 165
-	'['  shift 127
-	'?'  shift 128
+	'['  shift 125
+	'?'  shift 126
 	.  error
 
 
@@ -2129,8 +2011,6 @@ state 133
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
 	Expr : '(' Expr . ')'  (67)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 	IfStmt : IF '(' Expr . ')' Stmt ElseClause  (92)
 
@@ -2140,19 +2020,17 @@ state 133
 	GREATER_EQUAL  shift 114
 	EQUAL  shift 115
 	NOT_EQUAL  shift 116
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'>'  shift 124
-	'<'  shift 125
-	'.'  shift 126
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'>'  shift 122
+	'<'  shift 123
+	'.'  shift 124
 	')'  shift 167
-	'['  shift 127
-	'?'  shift 128
+	'['  shift 125
+	'?'  shift 126
 	.  error
 
 
@@ -2295,8 +2173,6 @@ state 139
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 	ExprList : Expr .  (88)
 
@@ -2306,18 +2182,16 @@ state 139
 	GREATER_EQUAL  shift 114
 	EQUAL  shift 115
 	NOT_EQUAL  shift 116
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'>'  shift 124
-	'<'  shift 125
-	'.'  shift 126
-	'['  shift 127
-	'?'  shift 128
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'>'  shift 122
+	'<'  shift 123
+	'.'  shift 124
+	'['  shift 125
+	'?'  shift 126
 	','  reduce 88
 	')'  reduce 88
 
@@ -2359,8 +2233,6 @@ state 143
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 	Expr : INSTANCEOF '(' Expr . ',' IDENTIFIER ')'  (80)
 
@@ -2370,19 +2242,17 @@ state 143
 	GREATER_EQUAL  shift 114
 	EQUAL  shift 115
 	NOT_EQUAL  shift 116
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'>'  shift 124
-	'<'  shift 125
-	'.'  shift 126
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'>'  shift 122
+	'<'  shift 123
+	'.'  shift 124
 	','  shift 174
-	'['  shift 127
-	'?'  shift 128
+	'['  shift 125
+	'?'  shift 126
 	.  error
 
 
@@ -2429,25 +2299,21 @@ state 148
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr AND Expr .  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
 	LESS_EQUAL  shift 113
 	GREATER_EQUAL  shift 114
 	EQUAL  shift 115
 	NOT_EQUAL  shift 116
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'>'  shift 124
-	'<'  shift 125
-	'.'  shift 126
-	'['  shift 127
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'>'  shift 122
+	'<'  shift 123
+	'.'  shift 124
+	'['  shift 125
 	AND  reduce 65
 	OR  reduce 65
 	','  reduce 65
@@ -2475,8 +2341,6 @@ state 149
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
 	Expr : Expr OR Expr .  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
 	AND  shift 111
@@ -2484,17 +2348,15 @@ state 149
 	GREATER_EQUAL  shift 114
 	EQUAL  shift 115
 	NOT_EQUAL  shift 116
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'>'  shift 124
-	'<'  shift 125
-	'.'  shift 126
-	'['  shift 127
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'>'  shift 122
+	'<'  shift 123
+	'.'  shift 124
+	'['  shift 125
 	OR  reduce 66
 	','  reduce 66
 	';'  reduce 66
@@ -2521,19 +2383,15 @@ state 150
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'.'  shift 126
-	'['  shift 127
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'.'  shift 124
+	'['  shift 125
 	AND  reduce 63
 	OR  reduce 63
 	EQUAL  reduce 63
@@ -2563,19 +2421,15 @@ state 151
 	Expr : Expr GREATER_EQUAL Expr .  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'.'  shift 126
-	'['  shift 127
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'.'  shift 124
+	'['  shift 125
 	AND  reduce 64
 	OR  reduce 64
 	EQUAL  reduce 64
@@ -2605,23 +2459,19 @@ state 152
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
 	LESS_EQUAL  shift 113
 	GREATER_EQUAL  shift 114
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'>'  shift 124
-	'<'  shift 125
-	'.'  shift 126
-	'['  shift 127
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'>'  shift 122
+	'<'  shift 123
+	'.'  shift 124
+	'['  shift 125
 	AND  reduce 59
 	OR  reduce 59
 	','  reduce 59
@@ -2649,23 +2499,19 @@ state 153
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
 	LESS_EQUAL  shift 113
 	GREATER_EQUAL  shift 114
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'>'  shift 124
-	'<'  shift 125
-	'.'  shift 126
-	'['  shift 127
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'>'  shift 122
+	'<'  shift 123
+	'.'  shift 124
+	'['  shift 125
 	AND  reduce 60
 	OR  reduce 60
 	','  reduce 60
@@ -2693,17 +2539,13 @@ state 154
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
-	INC  shift 117
-	DEC  shift 118
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'.'  shift 126
-	'['  shift 127
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'.'  shift 124
+	'['  shift 125
 	AND  reduce 54
 	OR  reduce 54
 	LESS_EQUAL  reduce 54
@@ -2739,17 +2581,13 @@ state 155
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
-	INC  shift 117
-	DEC  shift 118
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'.'  shift 126
-	'['  shift 127
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'.'  shift 124
+	'['  shift 125
 	AND  reduce 55
 	OR  reduce 55
 	LESS_EQUAL  reduce 55
@@ -2785,14 +2623,10 @@ state 156
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
-	INC  shift 117
-	DEC  shift 118
-	'.'  shift 126
-	'['  shift 127
+	'.'  shift 124
+	'['  shift 125
 	AND  reduce 56
 	OR  reduce 56
 	LESS_EQUAL  reduce 56
@@ -2831,14 +2665,10 @@ state 157
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
-	INC  shift 117
-	DEC  shift 118
-	'.'  shift 126
-	'['  shift 127
+	'.'  shift 124
+	'['  shift 125
 	AND  reduce 57
 	OR  reduce 57
 	LESS_EQUAL  reduce 57
@@ -2877,14 +2707,10 @@ state 158
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
-	INC  shift 117
-	DEC  shift 118
-	'.'  shift 126
-	'['  shift 127
+	'.'  shift 124
+	'['  shift 125
 	AND  reduce 58
 	OR  reduce 58
 	LESS_EQUAL  reduce 58
@@ -2923,19 +2749,15 @@ state 159
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'.'  shift 126
-	'['  shift 127
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'.'  shift 124
+	'['  shift 125
 	AND  reduce 62
 	OR  reduce 62
 	EQUAL  reduce 62
@@ -2965,19 +2787,15 @@ state 160
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'.'  shift 126
-	'['  shift 127
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'.'  shift 124
+	'['  shift 125
 	AND  reduce 61
 	OR  reduce 61
 	EQUAL  reduce 61
@@ -3007,8 +2825,6 @@ state 161
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
 	AND  shift 111
@@ -3017,19 +2833,17 @@ state 161
 	GREATER_EQUAL  shift 114
 	EQUAL  shift 115
 	NOT_EQUAL  shift 116
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'>'  shift 124
-	'<'  shift 125
-	'.'  shift 126
-	'['  shift 127
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'>'  shift 122
+	'<'  shift 123
+	'.'  shift 124
+	'['  shift 125
 	']'  shift 177
-	'?'  shift 128
+	'?'  shift 126
 	.  error
 
 
@@ -3049,8 +2863,6 @@ state 162
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 	Expr : Expr '?' Expr . ':' Expr  (74)
 
@@ -3060,18 +2872,16 @@ state 162
 	GREATER_EQUAL  shift 114
 	EQUAL  shift 115
 	NOT_EQUAL  shift 116
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'>'  shift 124
-	'<'  shift 125
-	'.'  shift 126
-	'['  shift 127
-	'?'  shift 128
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'>'  shift 122
+	'<'  shift 123
+	'.'  shift 124
+	'['  shift 125
+	'?'  shift 126
 	':'  shift 178
 	.  error
 
@@ -3093,8 +2903,6 @@ state 163
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 
 	AND  shift 111
@@ -3103,18 +2911,16 @@ state 163
 	GREATER_EQUAL  shift 114
 	EQUAL  shift 115
 	NOT_EQUAL  shift 116
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'>'  shift 124
-	'<'  shift 125
-	'.'  shift 126
-	'['  shift 127
-	'?'  shift 128
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'>'  shift 122
+	'<'  shift 123
+	'.'  shift 124
+	'['  shift 125
+	'?'  shift 126
 	';'  reduce 43
 	')'  reduce 43
 
@@ -3254,6 +3060,8 @@ state 167
 	READ_LINE  shift 56
 	LITERAL  shift 57
 	INSTANCEOF  shift 58
+	INC  shift 59
+	DEC  shift 60
 	NUMINSTANCES  shift 61
 	DO  shift 62
 	'!'  shift 64
@@ -3266,8 +3074,6 @@ state 167
 	GREATER_EQUAL  reduce 67
 	EQUAL  reduce 67
 	NOT_EQUAL  reduce 67
-	INC  reduce 67
-	DEC  reduce 67
 	'+'  reduce 67
 	'-'  reduce 67
 	'*'  reduce 67
@@ -3336,8 +3142,6 @@ state 171
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 	Expr : NEW Type '[' Expr . ']'  (79)
 
@@ -3347,19 +3151,17 @@ state 171
 	GREATER_EQUAL  shift 114
 	EQUAL  shift 115
 	NOT_EQUAL  shift 116
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'>'  shift 124
-	'<'  shift 125
-	'.'  shift 126
-	'['  shift 127
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'>'  shift 122
+	'<'  shift 123
+	'.'  shift 124
+	'['  shift 125
 	']'  shift 184
-	'?'  shift 128
+	'?'  shift 126
 	.  error
 
 
@@ -3503,8 +3305,6 @@ state 182
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 	ForStmt : FOR '(' SimpleStmt ';' Expr . ';' SimpleStmt ')' Stmt  (90)
 
@@ -3514,19 +3314,17 @@ state 182
 	GREATER_EQUAL  shift 114
 	EQUAL  shift 115
 	NOT_EQUAL  shift 116
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'>'  shift 124
-	'<'  shift 125
-	'.'  shift 126
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'>'  shift 122
+	'<'  shift 123
+	'.'  shift 124
 	';'  shift 190
-	'['  shift 127
-	'?'  shift 128
+	'['  shift 125
+	'?'  shift 126
 	.  error
 
 
@@ -3593,8 +3391,6 @@ state 185
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 	ExprList : ExprList ',' Expr .  (87)
 
@@ -3604,18 +3400,16 @@ state 185
 	GREATER_EQUAL  shift 114
 	EQUAL  shift 115
 	NOT_EQUAL  shift 116
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'>'  shift 124
-	'<'  shift 125
-	'.'  shift 126
-	'['  shift 127
-	'?'  shift 128
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'>'  shift 122
+	'<'  shift 123
+	'.'  shift 124
+	'['  shift 125
+	'?'  shift 126
 	','  reduce 87
 	')'  reduce 87
 
@@ -3643,8 +3437,6 @@ state 187
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 	Expr : '(' CLASS IDENTIFIER ')' Expr .  (81)
 
@@ -3667,8 +3459,6 @@ state 188
 	Expr : Expr . GREATER_EQUAL Expr  (64)
 	Expr : Expr . AND Expr  (65)
 	Expr : Expr . OR Expr  (66)
-	Expr : Expr . INC  (71)
-	Expr : Expr . DEC  (73)
 	Expr : Expr . '?' Expr ':' Expr  (74)
 	Expr : Expr '?' Expr ':' Expr .  (74)
 
@@ -3678,18 +3468,16 @@ state 188
 	GREATER_EQUAL  shift 114
 	EQUAL  shift 115
 	NOT_EQUAL  shift 116
-	INC  shift 117
-	DEC  shift 118
-	'+'  shift 119
-	'-'  shift 120
-	'*'  shift 121
-	'/'  shift 122
-	'%'  shift 123
-	'>'  shift 124
-	'<'  shift 125
-	'.'  shift 126
-	'['  shift 127
-	'?'  shift 128
+	'+'  shift 117
+	'-'  shift 118
+	'*'  shift 119
+	'/'  shift 120
+	'%'  shift 121
+	'>'  shift 122
+	'<'  shift 123
+	'.'  shift 124
+	'['  shift 125
+	'?'  shift 126
 	','  reduce 74
 	';'  reduce 74
 	')'  reduce 74

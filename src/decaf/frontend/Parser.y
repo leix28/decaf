@@ -344,21 +344,21 @@ Expr            :	LValue
                 	{
                 		$$.expr = new Tree.Unary(Tree.NOT, $2.expr, $1.loc);
                 	}
-                | INC Expr
+                | INC IDENTIFIER
                   {
-                    $$.expr = new Tree.Unary(Tree.PREINC, $2.expr, $1.loc);
+                    $$.expr = new Tree.Unary(Tree.PREINC, new Tree.Ident(null, $2.ident, $2.loc), $1.loc);
                   }
-                | Expr INC
+                | LValue INC
                   {
-                    $$.expr = new Tree.Unary(Tree.POSTINC, $1.expr, $2.loc);
+                    $$.expr = new Tree.Unary(Tree.POSTINC, $1.lvalue, $2.loc);
                   }
-                | DEC Expr
+                | DEC IDENTIFIER
                   {
-                    $$.expr = new Tree.Unary(Tree.PREDEC, $2.expr, $1.loc);
+                    $$.expr = new Tree.Unary(Tree.PREDEC, new Tree.Ident(null, $2.ident, $2.loc), $1.loc);
                   }
-                | Expr DEC
+                | LValue DEC
                   {
-                    $$.expr = new Tree.Unary(Tree.POSTDEC, $1.expr, $2.loc);
+                    $$.expr = new Tree.Unary(Tree.POSTDEC, $1.lvalue, $2.loc);
                   }
                 | Expr '?' Expr ':' Expr
                   {
