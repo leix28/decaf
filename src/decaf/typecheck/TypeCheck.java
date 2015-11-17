@@ -78,7 +78,18 @@ public class TypeCheck extends Tree.Visitor {
 				expr.type = BaseType.ERROR;
 			}
 		}
-		else{
+		else if (expr.tag == Tree.POSTINC || expr.tag == Tree.PREINC || expr.tag == Tree.POSTDEC || expr.tag == Tree.PREDEC) {
+			if (expr.expr.type.equal(BaseType.ERROR) || expr.expr.type.equal(BaseType.INT)) {
+				expr.type = expr.expr.type;
+			} else {
+				if (expr.tag == Tree.POSTINC || expr.tag == Tree.PREINC)
+					issueError(new IncompatUnOpError(expr.getLocation(), "++", expr.expr.type.toString()));
+				else
+					issueError(new IncompatUnOpError(expr.getLocation(), "--", expr.expr.type.toString()));
+				expr.type = BaseType.ERROR;
+			}
+		}
+		else {
 			if (!(expr.expr.type.equal(BaseType.BOOL) || expr.expr.type
 					.equal(BaseType.ERROR))) {
 				issueError(new IncompatUnOpError(expr.getLocation(), "!",

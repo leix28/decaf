@@ -346,19 +346,19 @@ Expr            :	LValue
                 	}
                 | INC IDENTIFIER
                   {
-                    $$.expr = new Tree.Unary(Tree.PREINC, new Tree.Ident(null, $2.ident, $2.loc), $1.loc);
+                    $$.expr = new Tree.Unary(Tree.PREINC, new Tree.Ident(null, $2.ident, $2.loc), $2.loc);
                   }
                 | LValue INC
                   {
-                    $$.expr = new Tree.Unary(Tree.POSTINC, $1.lvalue, $2.loc);
+                    $$.expr = new Tree.Unary(Tree.POSTINC, $1.lvalue, $1.loc);
                   }
                 | DEC IDENTIFIER
                   {
-                    $$.expr = new Tree.Unary(Tree.PREDEC, new Tree.Ident(null, $2.ident, $2.loc), $1.loc);
+                    $$.expr = new Tree.Unary(Tree.PREDEC, new Tree.Ident(null, $2.ident, $2.loc), $2.loc);
                   }
                 | LValue DEC
                   {
-                    $$.expr = new Tree.Unary(Tree.POSTDEC, $1.lvalue, $2.loc);
+                    $$.expr = new Tree.Unary(Tree.POSTDEC, $1.lvalue, $1.loc);
                   }
                 | Expr '?' Expr ':' Expr
                   {
