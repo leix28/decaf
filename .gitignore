@@ -1,2 +1,5 @@
 bin/
 *.pdf
+src/decaf/frontend/Lexer.java
+src/decaf/frontend/Parser.java
+src/decaf/frontend/Parser.output
