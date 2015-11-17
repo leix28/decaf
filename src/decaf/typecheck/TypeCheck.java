@@ -345,6 +345,15 @@ public class TypeCheck extends Tree.Visitor {
 	}
 
 	@Override
+	public void visitTypeCount(Tree.TypeCount count) {
+		count.type = BaseType.INT;
+		count.symbol = table.lookupClass(count.className);
+		if (count.symbol == null) {
+			issueError(new ClassNotFoundError(count.getLocation(), count.className));
+		}
+	}
+	
+	@Override
 	public void visitTypeCast(Tree.TypeCast cast) {
 		cast.expr.accept(this);
 		if (!cast.expr.type.isClassType()) {

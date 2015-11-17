@@ -1301,6 +1301,7 @@ public abstract class Tree {
    public static class TypeCount extends Expr {
    	
    	public String className;
+   	public Class symbol;
 
    	public TypeCount(String className, Location loc) {
    		super(TYPECOUNT, loc);
