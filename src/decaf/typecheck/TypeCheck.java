@@ -7,6 +7,7 @@ import java.util.Stack;
 import decaf.Driver;
 import decaf.Location;
 import decaf.tree.Tree;
+import decaf.tree.Tree.GuardedStmt;
 import decaf.error.BadArgCountError;
 import decaf.error.BadArgTypeError;
 import decaf.error.BadArrElementError;
@@ -529,6 +530,28 @@ public class TypeCheck extends Tree.Visitor {
 		if (ifStmt.falseBranch != null) {
 			ifStmt.falseBranch.accept(this);
 		}
+	}
+	
+	@Override
+	public void visitGuardedIf(Tree.GuardedIf guardedIf) {
+		for (Tree stmt : guardedIf.guarded) {
+			stmt.accept(this);
+		}
+	}
+	
+	@Override
+	public void visitGuardedDo(Tree.GuardedDo guardedDo) {
+		breaks.add(guardedDo);
+		for (Tree stmt : guardedDo.guarded) {
+			stmt.accept(this);
+		}
+		breaks.pop();
+	}
+	
+	@Override
+	public void visitGuardedStmt(GuardedStmt guardedStmt) {
+		guardedStmt.cond.accept(this);
+		guardedStmt.stmt.accept(this);
 	}
 
 	@Override
