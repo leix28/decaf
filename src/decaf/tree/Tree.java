@@ -9,6 +9,10 @@ package decaf.tree;
 import java.util.List;
 
 import decaf.*;
+import decaf.type.*;
+import decaf.scope.*;
+import decaf.symbol.*;
+import decaf.symbol.Class;
 import decaf.utils.IndentPrintWriter;
 import decaf.utils.MiscUtils;
 
@@ -301,6 +305,7 @@ public abstract class Tree {
 
 
     public Location loc;
+    public Type type;
     public int tag;
 
     /**
@@ -317,6 +322,14 @@ public abstract class Tree {
 	}
 
     /**
+      * Set type field and return this tree.
+      */
+    public Tree setType(Type type) {
+        this.type = type;
+        return this;
+    }
+
+    /**
       * Visit this tree with a given visitor.
       */
     public void accept(Visitor v) {
@@ -328,6 +341,8 @@ public abstract class Tree {
     public static class TopLevel extends Tree {
 
 		public List<ClassDef> classes;
+		public Class main;
+		public GlobalScope globalScope;
 		
 		public TopLevel(List<ClassDef> classes, Location loc) {
 			super(TOPLEVEL, loc);
@@ -355,6 +370,7 @@ public abstract class Tree {
     	public String name;
     	public String parent;
     	public List<Tree> fields;
+    	public Class symbol;
 
         public ClassDef(String name, String parent, List<Tree> fields,
     			Location loc) {
@@ -388,6 +404,7 @@ public abstract class Tree {
     	public TypeLiteral returnType;
     	public List<VarDef> formals;
     	public Block body;
+    	public Function symbol;
     	
         public MethodDef(boolean statik, String name, TypeLiteral returnType,
         		List<VarDef> formals, Block body, Location loc) {
@@ -427,6 +444,7 @@ public abstract class Tree {
     	
     	public String name;
     	public TypeLiteral type;
+    	public Variable symbol;
 
         public VarDef(String name, TypeLiteral type, Location loc) {
             super(VARDEF, loc);
@@ -470,7 +488,8 @@ public abstract class Tree {
     public static class Block extends Tree {
 
     	public List<Tree> block;
- 
+    	public LocalScope associatedScope;
+
         public Block(List<Tree> block, Location loc) {
             super(BLOCK, loc);
     		this.block = block;
@@ -711,6 +730,7 @@ public abstract class Tree {
 
     public abstract static class Expr extends Tree {
 
+    	public Type type;
     	public boolean isClass;
     	public boolean usedForRef;
     	
@@ -727,6 +747,8 @@ public abstract class Tree {
     	public Expr receiver;
     	public String method;
     	public List<Expr> actuals;
+    	public Function symbol;
+    	public boolean isArrayLength;
 
         public Apply(Expr receiver, String method, List<Expr> actuals,
     			Location loc) {
@@ -764,6 +786,7 @@ public abstract class Tree {
     public static class NewClass extends Expr {
 
     	public String className;
+    	public Class symbol;
 
         public NewClass(String className, Location loc) {
             super(NEWCLASS, loc);
@@ -970,6 +993,8 @@ public abstract class Tree {
 
     	public List<Expr> actuals;
 
+    	public Function symbol;
+
     	public boolean isArrayLength;
 
     	public CallExpr(Expr receiver, String method, List<Expr> actuals,
@@ -1060,6 +1085,7 @@ public abstract class Tree {
 
     	public String className;
     	public Expr expr;
+    	public Class symbol;
 
         public TypeCast(String className, Expr expr, Location loc) {
             super(TYPECAST, loc);
@@ -1089,6 +1115,7 @@ public abstract class Tree {
     	
     	public Expr instance;
     	public String className;
+    	public Class symbol;
 
         public TypeTest(Expr instance, String className, Location loc) {
             super(TYPETEST, loc);
@@ -1147,6 +1174,7 @@ public abstract class Tree {
 
     	public Expr owner;
     	public String name;
+    	public Variable symbol;
     	public boolean isDefined;
 
         public Ident(Expr owner, String name, Location loc) {
@@ -1223,6 +1251,8 @@ public abstract class Tree {
     }
 
     public static abstract class TypeLiteral extends Tree {
+    	
+    	public Type type;
     	
     	public TypeLiteral(int tag, Location loc){
     		super(tag, loc);
