@@ -228,7 +228,6 @@ public class BuildSym extends Tree.Visitor {
 	
 	@Override
 	public void visitGuardedStmt(Tree.GuardedStmt guardedIf) {
-		guardedIf.cond.accept(this);
 		guardedIf.stmt.accept(this);
 	};
 	
