@@ -351,6 +351,7 @@ public class TypeCheck extends Tree.Visitor {
 		count.symbol = table.lookupClass(count.className);
 		if (count.symbol == null) {
 			issueError(new ClassNotFoundError(count.getLocation(), count.className));
+			count.type = BaseType.ERROR;
 		}
 	}
 	
