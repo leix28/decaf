@@ -1,6 +1,7 @@
 package decaf;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,6 +12,7 @@ import decaf.error.DecafError;
 import decaf.frontend.Lexer;
 import decaf.frontend.Parser;
 import decaf.scope.ScopeStack;
+import decaf.translate.Translater;
 import decaf.typecheck.BuildSym;
 import decaf.typecheck.TypeCheck;
 import decaf.utils.IndentPrintWriter;
@@ -95,6 +97,14 @@ public final class Driver {
 		if (option.getLevel() == Option.Level.LEVEL1) {
 			IndentPrintWriter pw = new IndentPrintWriter(option.getOutput(), 4);
 			tree.globalScope.printTo(pw);
+			pw.close();
+			return;
+		}
+		PrintWriter pw = new PrintWriter(option.getOutput());
+		Translater tr = Translater.translate(tree);
+		checkPoint();
+		if (option.getLevel() == Option.Level.LEVEL2) {
+			tr.printTo(pw);
 			pw.close();
 			return;
 		}
