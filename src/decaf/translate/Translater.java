@@ -196,6 +196,13 @@ public class Translater {
 		append(Tac.genNeg(dst, src));
 		return dst;
 	}
+	
+	public Temp genPostInc(Temp src) {
+		Temp dst = Temp.createTempI4();
+		append(Tac.genAssign(dst, src));
+		append(Tac.genAdd(src, src, genLoadImm4(1)));
+		return dst;
+	}
 
 	public Temp genLAnd(Temp src1, Temp src2) {
 		Temp dst = Temp.createTempI4();

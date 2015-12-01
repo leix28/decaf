@@ -172,6 +172,9 @@ public class TransPass2 extends Tree.Visitor {
 		case Tree.NEG:
 			expr.val = tr.genNeg(expr.expr.val);
 			break;
+		case Tree.POSTINC:
+			expr.val = tr.genPostInc(expr.expr.val);
+			break;
 		default:
 			expr.val = tr.genLNot(expr.expr.val);
 		}
