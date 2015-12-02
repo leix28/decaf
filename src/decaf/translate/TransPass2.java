@@ -102,6 +102,14 @@ public class TransPass2 extends Tree.Visitor {
 			break;
 		}
 	}
+	
+	@Override
+	public void visitTernary(Tree.Ternary expr) {
+		expr.expr1.accept(this);
+		expr.expr2.accept(this);
+		expr.expr3.accept(this);
+		expr.val = tr.genCond(expr.expr1.val, expr.expr2.val, expr.expr3.val);
+	}
 
 	private void genEquNeq(Tree.Binary expr) {
 		if (expr.left.type.equal(BaseType.STRING)

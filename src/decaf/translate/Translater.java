@@ -216,6 +216,20 @@ public class Translater {
 			append(Tac.genAdd(src, src, genNeg(genLoadImm4(-val))));
 		return src;
 	}
+	
+	public Temp genCond(Temp c, Temp s1, Temp s2) {
+		Temp dst = Temp.createTempI4();
+		Label label = Label.createLabel();
+		Label end = Label.createLabel();
+		genBeqz(c, label);
+		append(Tac.genAssign(dst, s1));
+		genBranch(end);
+		genMark(label);
+		append(Tac.genAssign(dst, s2));
+		genMark(end);
+	
+		return dst;
+	}
 
 	public Temp genLAnd(Temp src1, Temp src2) {
 		Temp dst = Temp.createTempI4();
