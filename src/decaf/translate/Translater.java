@@ -500,6 +500,7 @@ public class Translater {
 	}
 	
 	public void incTypeCount(Class c) {
+		if (count.get(c.getVtable()) == null) return;
 		genPostUnary(count.get(c.getVtable()), 1);
 	}
 	
