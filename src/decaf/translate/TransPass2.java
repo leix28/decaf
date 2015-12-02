@@ -173,7 +173,16 @@ public class TransPass2 extends Tree.Visitor {
 			expr.val = tr.genNeg(expr.expr.val);
 			break;
 		case Tree.POSTINC:
-			expr.val = tr.genPostInc(expr.expr.val);
+			expr.val = tr.genPostUnary(expr.expr.val, 1);
+			break;
+		case Tree.PREINC:
+			expr.val = tr.genPreUnary(expr.expr.val, 1);
+			break;
+		case Tree.POSTDEC:
+			expr.val = tr.genPostUnary(expr.expr.val, -1);
+			break;
+		case Tree.PREDEC:
+			expr.val = tr.genPreUnary(expr.expr.val, -1);
 			break;
 		default:
 			expr.val = tr.genLNot(expr.expr.val);

@@ -199,11 +199,22 @@ public class Translater {
 		return dst;
 	}
 	
-	public Temp genPostInc(Temp src) {
+	public Temp genPostUnary(Temp src, int val) {
 		Temp dst = Temp.createTempI4();
 		append(Tac.genAssign(dst, src));
-		append(Tac.genAdd(src, src, genLoadImm4(1)));
+		if (val >= 0) 
+			append(Tac.genAdd(src, src, genLoadImm4(val)));
+		else 
+			append(Tac.genAdd(src, src, genNeg(genLoadImm4(-val))));
 		return dst;
+	}
+	
+	public Temp genPreUnary(Temp src, int val) {
+		if (val >= 0)
+			append(Tac.genAdd(src, src, genLoadImm4(val)));
+		else 
+			append(Tac.genAdd(src, src, genNeg(genLoadImm4(-val))));
+		return src;
 	}
 
 	public Temp genLAnd(Temp src1, Temp src2) {
