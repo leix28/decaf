@@ -373,6 +373,7 @@ public class TransPass2 extends Tree.Visitor {
 	public void visitNewClass(Tree.NewClass newClass) {
 		newClass.val = tr.genDirectCall(newClass.symbol.getNewFuncLabel(),
 				BaseType.INT);
+		tr.incTypeCount(newClass.symbol);
 	}
 
 	@Override
@@ -396,6 +397,11 @@ public class TransPass2 extends Tree.Visitor {
 		typeTest.instance.accept(this);
 		typeTest.val = tr.genInstanceof(typeTest.instance.val,
 				typeTest.symbol);
+	}
+	
+	@Override
+	public void visitTypeCount(Tree.TypeCount typeCount) {
+		typeCount.val = tr.genTypeCount(typeCount.symbol);
 	}
 
 	@Override

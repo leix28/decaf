@@ -2,6 +2,7 @@ package decaf.translate;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,13 +25,15 @@ import decaf.type.Type;
 
 public class Translater {
 	private List<VTable> vtables;
-
+	private HashMap<VTable, Temp> count;
+	
 	private List<Functy> funcs;
 
 	private Functy currentFuncty;
 
 	public Translater() {
 		vtables = new ArrayList<VTable>();
+		count = new HashMap<VTable, Temp>();
 		funcs = new ArrayList<Functy>();
 	}
 
@@ -100,6 +103,11 @@ public class Translater {
 		currentFuncty = func.getFuncty();
 		currentFuncty.paramMemo = memoOf(func);
 		genMark(func.getFuncty().label);
+		if (func.isMain()) {
+			for (VTable vt : vtables) {
+				count.put(vt, genLoadImm4(0));
+			}
+		}
 	}
 
 	public void endFunc() {
@@ -488,6 +496,15 @@ public class Translater {
 		genBnez(vp, loop);
 		append(Tac.genLoadImm4(dst, Temp.createConstTemp(0)));
 		genMark(exit);
+		return dst;
+	}
+	
+	public void incTypeCount(Class c) {
+		genPostUnary(count.get(c.getVtable()), 1);
+	}
+	
+	public Temp genTypeCount(Class c) {
+		Temp dst = count.get(c.getVtable());
 		return dst;
 	}
 
