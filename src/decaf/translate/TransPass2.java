@@ -3,6 +3,7 @@ package decaf.translate;
 import java.util.Stack;
 
 import decaf.tree.Tree;
+import decaf.tree.Tree.GuardedStmt;
 import decaf.backend.OffsetCounter;
 import decaf.machdesc.Intrinsic;
 import decaf.symbol.Variable;
@@ -362,7 +363,40 @@ public class TransPass2 extends Tree.Visitor {
 			tr.genMark(exit);
 		}
 	}
+		
+	@Override
+	public void visitGuardedIf(Tree.GuardedIf guardedIf) {
+		Label exit = Label.createLabel();
+		for (Tree stmt : guardedIf.guarded) {
+			Tree.GuardedStmt gstmt = (Tree.GuardedStmt)stmt;
+			Label skip = Label.createLabel();
+			gstmt.cond.accept(this);
+			tr.genBeqz(gstmt.cond.val, skip);
+			gstmt.stmt.accept(this);
+			tr.genBranch(exit);
+			tr.genMark(skip);
+		}
+		tr.genMark(exit);
+	};
 
+	@Override
+	public void visitGuardedDo(Tree.GuardedDo guardedDo) {
+		Label st = Label.createLabel();
+		Label exit = Label.createLabel();
+		tr.genMark(st);
+		loopExits.push(exit);
+		for (Tree stmt : guardedDo.guarded) {
+			Tree.GuardedStmt gstmt = (Tree.GuardedStmt)stmt;
+			Label skip = Label.createLabel();
+			gstmt.cond.accept(this);
+			tr.genBeqz(gstmt.cond.val, skip);
+			gstmt.stmt.accept(this);
+			tr.genBranch(st);
+			tr.genMark(skip);
+		}
+		tr.genMark(exit);
+	};
+	
 	@Override
 	public void visitNewArray(Tree.NewArray newArray) {
 		newArray.length.accept(this);
